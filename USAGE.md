@@ -111,6 +111,90 @@ To start crawling additional websites:
 2. Restart your crawler
 3. The network will automatically update assignments
 
+## Deep Crawling Capabilities
+
+The crawler now supports deep crawling of websites, following links to crawl multiple pages:
+
+### How Deep Crawling Works
+
+1. **Multiple Pages Per Website**: Instead of just crawling the homepage, the crawler follows links and crawls multiple pages from each website.
+
+2. **Depth Control**: By default, the crawler follows links up to 3 levels deep from the starting URL.
+
+3. **URL Filtering**: The crawler intelligently filters URLs, avoiding binary files, duplicate pages, and common patterns that lead to duplicate content.
+
+4. **Respectful Crawling**: Built-in delays between requests ensure websites aren't overwhelmed with traffic.
+
+### Configuring Deep Crawling
+
+You can customize the crawler's behavior by editing `src/crawler.js`:
+
+```javascript
+// Default configuration
+const DEFAULT_CONFIG = {
+  maxDepth: 3, // Maximum depth to crawl
+  maxPagesPerSite: 50, // Maximum pages to crawl per website
+  followExternalLinks: false, // Whether to follow links to external domains
+  ignoreUrlPatterns: [
+    // URL patterns to ignore
+    /\.(jpg|jpeg|png|gif|svg|webp|css|js|pdf|zip|rar|xml|mp4|mp3|avi)$/i,
+    /\?|\&(utm_|source=|ref=)/i,
+    /#.*/,
+  ],
+  delayBetweenRequests: 1000, // Delay between requests in milliseconds
+};
+```
+
+Modify these settings to control:
+
+- How deeply the crawler follows links
+- How many pages it crawls per website
+- Whether it should follow external links
+- Which URL patterns to ignore
+- How long to wait between requests
+
+### Viewing Crawled Pages
+
+To view all the pages crawled for a specific domain:
+
+```bash
+# View all domains and their page counts
+npm run read-db peer_id
+
+# View all pages for a specific domain
+npm run read-db peer_id example.com
+```
+
+Or run directly:
+
+```bash
+node src/read-db.js peer_id example.com
+```
+
+The command will show:
+
+- All pages crawled for the domain
+- When each page was last crawled
+- A preview of the content for each page
+
+### Using Crawled Data
+
+When you retrieve data from another peer, you'll get access to all pages they've crawled for that domain, not just the homepage:
+
+```javascript
+import { getAllPagesForDomain } from "./src/db.js";
+
+// Get all pages from a domain
+const pages = await getAllPagesForDomain("example.com");
+
+// Each page contains:
+// - url: The full URL of the page
+// - path: The path component of the URL
+// - html: The HTML content
+// - timestamp: When it was crawled
+// - domain: The domain name
+```
+
 ## Common Questions
 
 ### How many websites can I crawl?

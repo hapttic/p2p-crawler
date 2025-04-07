@@ -80,11 +80,15 @@ npm run client
 The standalone client connects to the P2P network without opening the database directly, which avoids lock conflicts. It's useful when you already have the main application running.
 
 ```bash
-# Connect to the network and request data for a specific website
+# Request data for a specific website
 npm run standalone https://example.com
+
+# Request ALL pages from a specific domain
+npm run standalone -- --domain example.com
 
 # Or run directly
 node src/standalone-client.js https://example.com
+node src/standalone-client.js --domain example.com
 ```
 
 ### Inspecting the Database
@@ -163,3 +167,24 @@ This means that another process (likely the main p2p-crawler application) alread
    ```
 
 3. **Stop other processes**: Alternatively, you can stop any other processes using the database before running your script.
+
+## Deep Crawling Features
+
+The crawler now supports deep crawling of websites, including:
+
+- **Multi-page crawling**: Follows links to crawl multiple pages from each website
+- **Configurable depth**: Controls how many links deep to crawl (default: 3 levels)
+- **Smart filtering**: Avoids duplicate content, binary files, and irrelevant URLs
+- **Respectful crawling**: Built-in delays between requests to be respectful to websites
+
+To view all pages crawled for a specific domain:
+
+```bash
+# View all domains and page counts
+npm run read-db peer_id
+
+# View all pages for a specific domain
+npm run read-db peer_id example.com
+```
+
+For more information about deep crawling capabilities, see the [USAGE.md](USAGE.md) file.

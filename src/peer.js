@@ -1,7 +1,7 @@
 import Hyperswarm from "hyperswarm";
 import crypto from "crypto";
 import { crawlWebsites } from "./crawler.js";
-import { core, getPageData } from "./db.js";
+import { core, getPageData, getAllPagesForDomain } from "./db.js";
 import { websites, peerId } from "./config.js";
 import {
   getMyWebsites,
@@ -75,6 +75,10 @@ function handleMessage(peerId, message) {
     case "REQUEST_DATA":
       handleDataRequest(peerId, message);
       break;
+
+    case "REQUEST_DOMAIN_PAGES":
+      handleDomainPagesRequest(peerId, message);
+      break;
   }
 }
 
@@ -82,8 +86,13 @@ function handleMessage(peerId, message) {
 async function handleDataRequest(peerId, message) {
   const { website } = message;
 
-  // Check if we're responsible for this website
-  if (myWebsites.includes(website)) {
+  // Check if we're responsible for this website or its domain
+  const websiteDomain = extractDomain(website);
+  const isResponsible = myWebsites.some((myUrl) => {
+    return myUrl === website || extractDomain(myUrl) === websiteDomain;
+  });
+
+  if (isResponsible) {
     const data = await getPageData(website);
     if (data) {
       sendMessage(peers.get(peerId).socket, {
@@ -93,6 +102,40 @@ async function handleDataRequest(peerId, message) {
         timestamp: Date.now(),
       });
     }
+  }
+}
+
+// Handle requests for all pages of a domain
+async function handleDomainPagesRequest(peerId, message) {
+  const { domain } = message;
+
+  // Check if we're responsible for any website in this domain
+  const isResponsible = myWebsites.some(
+    (myUrl) => extractDomain(myUrl) === domain
+  );
+
+  if (isResponsible) {
+    const pages = await getAllPagesForDomain(domain);
+
+    sendMessage(peers.get(peerId).socket, {
+      type: "DOMAIN_PAGES",
+      domain,
+      pages,
+      timestamp: Date.now(),
+    });
+
+    console.log(
+      `[Peer] Sent ${pages.length} pages for domain ${domain} to peer ${peerId}`
+    );
+  }
+}
+
+// Extract domain from a URL
+function extractDomain(url) {
+  try {
+    return new URL(url).hostname;
+  } catch (err) {
+    return null;
   }
 }
 
@@ -124,6 +167,53 @@ export async function requestWebsiteData(website) {
   // TODO: Implement a proper request/response pattern with promises
   // For now, we just return null and let the data sync through Hypercore replication
   return null;
+}
+
+// Request all pages for a domain from the responsible peer
+export async function requestDomainPages(domain) {
+  // Find a peer responsible for this domain
+  let responsiblePeerId = null;
+
+  // Check if any of our known peers is responsible for this domain
+  for (const [otherPeerId, assignedSites] of Object.entries(
+    getAllAssignments()
+  )) {
+    if (otherPeerId === peerId) continue; // Skip ourselves
+
+    const isResponsible = assignedSites.some(
+      (site) => extractDomain(site) === domain
+    );
+    if (isResponsible) {
+      responsiblePeerId = otherPeerId;
+      break;
+    }
+  }
+
+  if (!responsiblePeerId) {
+    // We don't know who has it, try to find it locally
+    return await getAllPagesForDomain(domain);
+  }
+
+  if (responsiblePeerId === peerId) {
+    // We have it
+    return await getAllPagesForDomain(domain);
+  }
+
+  const peerConnection = peers.get(responsiblePeerId);
+  if (!peerConnection) {
+    console.log(`[Peer] Responsible peer ${responsiblePeerId} not connected`);
+    return [];
+  }
+
+  // Send request to the peer
+  sendMessage(peerConnection.socket, {
+    type: "REQUEST_DOMAIN_PAGES",
+    domain,
+  });
+
+  // TODO: Implement a proper request/response pattern with promises
+  // For now, we just return an empty array and let the data sync through Hypercore replication
+  return [];
 }
 
 console.log(`[Peer] ${peerId} crawling:`, myWebsites);
