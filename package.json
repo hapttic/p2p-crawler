@@ -8,6 +8,7 @@
     "start": "node src/index.js",
     "client": "node src/client.js",
     "example": "node src/example.js",
+    "standalone": "node src/standalone-client.js",
     "read-db": "node src/read-db.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

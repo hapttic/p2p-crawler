@@ -75,6 +75,18 @@ npm run example
 npm run client
 ```
 
+### Using the Standalone Client
+
+The standalone client connects to the P2P network without opening the database directly, which avoids lock conflicts. It's useful when you already have the main application running.
+
+```bash
+# Connect to the network and request data for a specific website
+npm run standalone https://example.com
+
+# Or run directly
+node src/standalone-client.js https://example.com
+```
+
 ### Inspecting the Database
 
 ```bash
@@ -125,3 +137,29 @@ PEER_ID=peer2 npm start
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Troubleshooting
+
+### Database Lock Error
+
+If you encounter this error:
+
+```
+Error: While lock file: storage/peer_1/data/db/LOCK: Resource temporarily unavailable
+```
+
+This means that another process (likely the main p2p-crawler application) already has the database open. When this happens:
+
+1. **Use the standalone client**: Instead of the example.js or client.js, use the standalone client which doesn't try to open the database directly:
+
+   ```bash
+   npm run standalone https://example.com
+   ```
+
+2. **Different peer ID**: If you need to access the database directly, use a different peer ID:
+
+   ```bash
+   PEER_ID=another_peer npm run example
+   ```
+
+3. **Stop other processes**: Alternatively, you can stop any other processes using the database before running your script.
