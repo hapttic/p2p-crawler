@@ -87,16 +87,16 @@ flowchart TD
     Ecommerce("E-commerce data<br>50 pages crawled")
 
     %% Scenario 1
-    User -->|"1. Run command:<br>npm run standalone https://news.com/article"| Client1
-    Client1 -->|"2. Ask: Who has<br>this specific page?"| Peer1
-    Peer1 -->|"3. Here's the page data"| Client1
-    Client1 -->|"4. Display page content"| User
+    User -->|"1.Run command:<br>npm run standalone https://news.com/article"| Client1
+    Client1 -->|"2.Ask: Who has<br>this specific page?"| Peer1
+    Peer1 -->|"3.Here's the page data"| Client1
+    Client1 -->|"4.Display page content"| User
 
     %% Scenario 2
-    User -->|"1. Run command:<br>npm run standalone --domain shop.com"| Client2
-    Client2 -->|"2. Ask: Who has all<br>pages from this domain?"| Peer2
-    Peer2 -->|"3. Here are all 50 pages"| Client2
-    Client2 -->|"4. Display all pages"| User
+    User -->|"1.Run command:<br>npm run standalone --domain shop.com"| Client2
+    Client2 -->|"2.Ask: Who has all<br>pages from this domain?"| Peer2
+    Peer2 -->|"3.Here are all 50 pages"| Client2
+    Client2 -->|"4.Display all pages"| User
 
     %% Data connections
     Peer1 -->|"Crawled and stored"| News
@@ -113,16 +113,16 @@ flowchart TD
     Note3 -.-> Peer1
 
     %% Apply styles
-    User:::userStyle
-    Client1:::clientStyle
-    Client2:::clientStyle
-    Peer1:::peerStyle
-    Peer2:::peerStyle
-    News:::dataStyle
-    Ecommerce:::dataStyle
-    Note1:::noteStyle
-    Note2:::noteStyle
-    Note3:::noteStyle
+    class User userStyle
+    class Client1 clientStyle
+    class Client2 clientStyle
+    class Peer1 peerStyle
+    class Peer2 peerStyle
+    class News dataStyle
+    class Ecommerce dataStyle
+    class Note1 noteStyle
+    class Note2 noteStyle
+    class Note3 noteStyle
 ```
 
 ## Network Topology
