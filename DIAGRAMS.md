@@ -69,51 +69,60 @@ graph TB
 ## Example Usage Scenarios
 
 ```mermaid
-graph TB
-    classDef userNode fill:#f9d5e5,stroke:#333,stroke-width:2px;
-    classDef clientNode fill:#a8d8ea,stroke:#333,stroke-width:2px;
-    classDef peerNode fill:#eeeeee,stroke:#333,stroke-width:2px;
-    classDef dataNode fill:#c8e6c9,stroke:#333,stroke-width:2px;
+flowchart TD
+    %% Node styles
+    classDef userStyle fill:#ffdbd9,stroke:#333,stroke-width:1px,color:#333
+    classDef clientStyle fill:#b3e0ff,stroke:#333,stroke-width:1px,color:#333
+    classDef peerStyle fill:#f0f0f0,stroke:#333,stroke-width:1px,color:#333
+    classDef dataStyle fill:#d4edda,stroke:#333,stroke-width:1px,color:#333
+    classDef noteStyle fill:#ffeeba,stroke:#333,stroke-width:1px,color:#333,text-align:center
 
-    %% User nodes
-    User[Person using<br>the system]:::userNode
+    %% Define nodes
+    User("Person using<br>the system")
+    Client1("Client 1:<br>Request specific page")
+    Client2("Client 2:<br>Request entire domain")
+    Peer1("Peer 1:<br>Crawls news websites")
+    Peer2("Peer 2:<br>Crawls e-commerce sites")
+    News("News website data<br>50 pages crawled")
+    Ecommerce("E-commerce data<br>50 pages crawled")
 
-    %% Client nodes
-    Client1[Client 1:<br>Request specific page]:::clientNode
-    Client2[Client 2:<br>Request entire domain]:::clientNode
+    %% Scenario 1
+    User -->|"1. Run command:<br>npm run standalone https://news.com/article"| Client1
+    Client1 -->|"2. Ask: Who has<br>this specific page?"| Peer1
+    Peer1 -->|"3. Here's the page data"| Client1
+    Client1 -->|"4. Display page content"| User
 
-    %% Peer nodes
-    Peer1[Peer 1:<br>Crawls news websites]:::peerNode
-    Peer2[Peer 2:<br>Crawls e-commerce sites]:::peerNode
+    %% Scenario 2
+    User -->|"1. Run command:<br>npm run standalone --domain shop.com"| Client2
+    Client2 -->|"2. Ask: Who has all<br>pages from this domain?"| Peer2
+    Peer2 -->|"3. Here are all 50 pages"| Client2
+    Client2 -->|"4. Display all pages"| User
 
-    %% Data nodes
-    News[News website data<br>50 pages crawled]:::dataNode
-    Ecommerce[E-commerce data<br>50 pages crawled]:::dataNode
+    %% Data connections
+    Peer1 -->|"Crawled and stored"| News
+    Peer2 -->|"Crawled and stored"| Ecommerce
 
-    %% Scenario 1: Getting a specific page
-    User -->|1. Run command:<br>npm run standalone https://news.com/article| Client1
-    Client1 -->|2. Ask: Who has<br>this specific page?| Peer1
-    Peer1 -->|3. Here's the page data| Client1
-    Client1 -->|4. Display page content| User
+    %% Helpful notes
+    Note1["You only need the domain name<br>to access all its crawled content"]
+    Note2["The system automatically finds<br>which peer has the data you need"]
+    Note3["Each peer specializes in<br>specific websites"]
 
-    %% Scenario 2: Getting all pages from a domain
-    User -->|1. Run command:<br>npm run standalone --domain shop.com| Client2
-    Client2 -->|2. Ask: Who has all<br>pages from this domain?| Peer2
-    Peer2 -->|3. Here are all 50 pages| Client2
-    Client2 -->|4. Display all pages| User
-
-    %% Data relationships
-    Peer1 -->|Crawled and stored| News
-    Peer2 -->|Crawled and stored| Ecommerce
-
-    %% Example notes
-    Note1[You only need the domain name<br>to access all its crawled content]
-    Note2[The system automatically finds<br>which peer has the data you need]
-    Note3[Each peer specializes in<br>specific websites]
-
+    %% Connect notes
     Note1 -.-> Client2
     Note2 -.-> Client1
     Note3 -.-> Peer1
+
+    %% Apply styles
+    User:::userStyle
+    Client1:::clientStyle
+    Client2:::clientStyle
+    Peer1:::peerStyle
+    Peer2:::peerStyle
+    News:::dataStyle
+    Ecommerce:::dataStyle
+    Note1:::noteStyle
+    Note2:::noteStyle
+    Note3:::noteStyle
 ```
 
 ## Network Topology
