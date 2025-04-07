@@ -75,7 +75,7 @@ flowchart TD
     classDef clientStyle fill:#b3e0ff,stroke:#333,stroke-width:1px,color:#333
     classDef peerStyle fill:#f0f0f0,stroke:#333,stroke-width:1px,color:#333
     classDef dataStyle fill:#d4edda,stroke:#333,stroke-width:1px,color:#333
-    classDef noteStyle fill:#ffeeba,stroke:#333,stroke-width:1px,color:#333,text-align:center
+    classDef noteStyle fill:#ffeeba,stroke:#333,stroke-width:1px,color:#333
 
     %% Define nodes
     User("Person using<br>the system")
