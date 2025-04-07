@@ -4,11 +4,11 @@
 
 ```mermaid
 graph TB
-subgraph "P2P Network"
-subgraph "Peer 1 [peer_1]"
-P1W[Assigned Website: imedinews.ge]
-P1DB[(Database)]
-P1C[Deep Crawler]
+    subgraph "P2P Network"
+        subgraph "Peer 1 [peer_1]"
+            P1W[Assigned Website: imedinews.ge]
+            P1DB[(Database)]
+            P1C[Deep Crawler]
 
             P1C -->|Crawls deeply<br>up to 50 pages| P1W
             P1W -->|Stores HTML| P1DB
@@ -69,40 +69,51 @@ P1C[Deep Crawler]
 ## Example Usage Scenarios
 
 ```mermaid
-sequenceDiagram
-    participant User as User
-    participant Client as Standalone Client
-    participant P2P as P2P Network
-    participant Peer1 as Peer 1 (crawling imedinews.ge)
-    participant Peer2 as Peer 2 (crawling example.com)
+graph TB
+    classDef userNode fill:#f9d5e5,stroke:#333,stroke-width:2px;
+    classDef clientNode fill:#a8d8ea,stroke:#333,stroke-width:2px;
+    classDef peerNode fill:#eeeeee,stroke:#333,stroke-width:2px;
+    classDef dataNode fill:#c8e6c9,stroke:#333,stroke-width:2px;
 
-    %% Startup Scenario
-    User->>Peer1: Starts crawler<br>(npm start)
-    User->>Peer2: Starts crawler on<br>another computer
+    %% User nodes
+    User[Person using<br>the system]:::userNode
 
-    Peer1->>P2P: Joins network<br>announces websites
-    Peer2->>P2P: Joins network<br>announces websites
+    %% Client nodes
+    Client1[Client 1:<br>Request specific page]:::clientNode
+    Client2[Client 2:<br>Request entire domain]:::clientNode
 
-    Peer1->>Peer1: Crawls imedinews.ge deeply<br>(50 pages)
-    Peer2->>Peer2: Crawls example.com deeply<br>(50 pages)
+    %% Peer nodes
+    Peer1[Peer 1:<br>Crawls news websites]:::peerNode
+    Peer2[Peer 2:<br>Crawls e-commerce sites]:::peerNode
 
-    %% Client request - specific page
-    User->>Client: npm run standalone https://imedinews.ge/article
-    Client->>P2P: Connect to network
-    P2P->>Client: Connect to peers
-    Client->>P2P: Who has imedinews.ge/article?
-    P2P->>Client: Peer 1 has it
-    Client->>Peer1: Request imedinews.ge/article
-    Peer1->>Client: Return page data
-    Client->>User: Display page content
+    %% Data nodes
+    News[News website data<br>50 pages crawled]:::dataNode
+    Ecommerce[E-commerce data<br>50 pages crawled]:::dataNode
 
-    %% Client request - entire domain
-    User->>Client: npm run standalone --domain example.com
-    Client->>P2P: Who has example.com domain?
-    P2P->>Client: Peer 2 has it
-    Client->>Peer2: Request all pages from example.com
-    Peer2->>Client: Return 50 pages of data
-    Client->>User: Display all pages
+    %% Scenario 1: Getting a specific page
+    User -->|1. Run command:<br>npm run standalone https://news.com/article| Client1
+    Client1 -->|2. Ask: Who has<br>this specific page?| Peer1
+    Peer1 -->|3. Here's the page data| Client1
+    Client1 -->|4. Display page content| User
+
+    %% Scenario 2: Getting all pages from a domain
+    User -->|1. Run command:<br>npm run standalone --domain shop.com| Client2
+    Client2 -->|2. Ask: Who has all<br>pages from this domain?| Peer2
+    Peer2 -->|3. Here are all 50 pages| Client2
+    Client2 -->|4. Display all pages| User
+
+    %% Data relationships
+    Peer1 -->|Crawled and stored| News
+    Peer2 -->|Crawled and stored| Ecommerce
+
+    %% Example notes
+    Note1[You only need the domain name<br>to access all its crawled content]
+    Note2[The system automatically finds<br>which peer has the data you need]
+    Note3[Each peer specializes in<br>specific websites]
+
+    Note1 -.-> Client2
+    Note2 -.-> Client1
+    Note3 -.-> Peer1
 ```
 
 ## Network Topology
