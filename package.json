@@ -1,0 +1,21 @@
+{
+  "name": "p2p-crawler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "hyperbee": "^2.24.1",
+    "hypercore": "^11.2.0",
+    "hyperswarm": "^4.11.1",
+    "node-fetch": "^3.3.2",
+    "random-access-storage": "^3.0.2"
+  }
+}
