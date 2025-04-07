@@ -87,7 +87,7 @@ flowchart TD
     Ecommerce("E-commerce data<br>50 pages crawled")
 
     %% Scenario 1
-    User -->|"1.Run command:<br>npm run standalone https://news.com/article"| Client1
+    User -->|"1.Run command:<br>npm run standalone some-page-link"| Client1
     Client1 -->|"2.Ask: Who has<br>this specific page?"| Peer1
     Peer1 -->|"3.Here's the page data"| Client1
     Client1 -->|"4.Display page content"| User
