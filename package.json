@@ -1,13 +1,26 @@
 {
   "name": "p2p-crawler",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A distributed web crawler system built using Pear by Holepunch",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
+    "start": "node src/index.js",
+    "client": "node src/client.js",
+    "example": "node src/example.js",
+    "read-db": "node src/read-db.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "pear",
+    "holepunch",
+    "p2p",
+    "web-crawler",
+    "distributed",
+    "hypercore",
+    "hyperbee",
+    "hyperswarm"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
